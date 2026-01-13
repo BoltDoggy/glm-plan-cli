@@ -31,7 +31,11 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] **中文优先**: 所有用户可见文本使用中文（CLI 输出、错误提示、帮助文档）
+- [ ] **简洁实用**: 功能范围清晰，无过度设计，依赖最小化
+- [ ] **安全第一**: API 密钥管理方案明确（环境变量或配置文件），无硬编码敏感信息
+- [ ] **错误友好**: 错误处理策略清晰，包含可操作的中文错误信息
+- [ ] **可测试性**: 核心模块测试策略明确，测试覆盖关键场景
 
 ## Project Structure
 
