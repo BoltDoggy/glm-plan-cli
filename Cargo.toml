@@ -1,0 +1,24 @@
+[package]
+name = "glm-cli"
+version = "1.0.0"
+edition = "2021"
+description = "GLM API 计划查询命令行工具"
+license = "MIT"
+repository = "https://github.com/your-org/glm-plan-cli"
+readme = "README.md"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+thiserror = "1.0"
+anyhow = "1.0"
+comfy-table = "7.0"
+dirs = "5.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+[dev-dependencies]
+# 测试依赖（如需要）

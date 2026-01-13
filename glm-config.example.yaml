@@ -1,0 +1,23 @@
+# GLM API 配置文件示例
+#
+# 请将此文件复制到 ~/.glm/config.yaml 并填入您的实际 API 密钥
+#
+# 复制命令:
+#   mkdir -p ~/.glm
+#   cp glm-config.example.yaml ~/.glm/config.yaml
+#   chmod 600 ~/.glm/config.yaml
+#
+# 然后编辑 ~/.glm/config.yaml，填入您的 API 密钥
+
+# API 密钥（必填）
+# 从智谱 AI 开放平台获取: https://open.bigmodel.cn
+# 长度必须至少 10 个字符
+api_key: your_api_key_here
+
+# API 端点 URL（可选）
+# 默认值: https://bigmodel.cn/api
+# api_url: https://bigmodel.cn/api
+
+# 请求超时时间（秒，可选）
+# 默认值: 30
+# timeout: 30
