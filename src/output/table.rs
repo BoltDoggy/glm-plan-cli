@@ -3,7 +3,8 @@
 //! 渲染更加用户友好的 API 使用情况显示。
 
 use crate::api::{ApiData, LimitItem};
-use chrono::{Utc, Timelike};
+use chrono::{Timelike, Utc};
+use chrono::Local;
 
 /// 渲染 API 使用情况信息
 ///
@@ -45,7 +46,7 @@ fn render_limit_item(limit: &LimitItem) -> String {
 
     // 百分比（显示在上方，不带 %，单独一行）
     let percentage = limit.percentage as u32;
-    output.push_str(&format!("{}\n", percentage));
+    // output.push_str(&format!("{}\n", percentage));
 
     // 进度条（在百分比下方）
     output.push_str(&render_progress_bar(percentage));
@@ -57,10 +58,7 @@ fn render_limit_item(limit: &LimitItem) -> String {
     match limit.limit_type.as_str() {
         "TIME_LIMIT" => {
             // TIME_LIMIT 显示具体使用次数
-            output.push_str(&format_number_with_used(
-                limit.current_value,
-                limit.usage,
-            ));
+            output.push_str(&format_number_with_used(limit.current_value, limit.usage));
             output.push_str("\n");
         }
         "TOKENS_LIMIT" => {
@@ -106,8 +104,8 @@ fn render_reset_time(limit: &LimitItem) -> String {
             if let Some(reset_ts) = limit.next_reset_time {
                 let reset_time = chrono::DateTime::from_timestamp_millis(reset_ts);
                 if let Some(dt) = reset_time {
-                    return format!("重置时间：{:02}:{:02}\n",
-                        dt.hour(), dt.minute());
+                    let local_dt = dt.with_timezone(&Local);
+                    return format!("重置时间：{:02}:{:02}\n", local_dt.hour(), local_dt.minute());
                 }
             }
             "重置时间：每5小时重置\n".to_string()
@@ -148,7 +146,7 @@ fn format_number(num: u64) -> String {
 
 /// 格式化当前时间
 fn format_now() -> String {
-    let now = Utc::now();
+    let now = Utc::now().with_timezone(&Local);
     now.format("%Y-%m-%d %H:%M:%S").to_string()
 }
 
@@ -175,7 +173,10 @@ mod tests {
     fn test_format_number_with_used() {
         assert_eq!(format_number_with_used(164, 1000), "164 / 1K 次");
         assert_eq!(format_number_with_used(500, 500), "500 / 500 次");
-        assert_eq!(format_number_with_used(1500000, 2000000), "1,500,000 / 2M 次");
+        assert_eq!(
+            format_number_with_used(1500000, 2000000),
+            "1,500,000 / 2M 次"
+        );
     }
 
     #[test]
