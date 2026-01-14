@@ -4,9 +4,9 @@
 
 use anyhow::Result;
 use clap::Parser;
-use glm_cli::api::GlmClient;
-use glm_cli::config::Config;
-use glm_cli::output::render_table;
+use glm::api::GlmClient;
+use glm::config::Config;
+use glm::output::render_table;
 
 /// GLM API 计划查询工具
 #[derive(Parser, Debug)]
@@ -24,11 +24,11 @@ async fn main() -> Result<()> {
     let _args = Args::parse();
 
     // 加载配置
-    let config = Config::load()
-        .map_err(|e| anyhow::anyhow!("配置加载失败: {}", e))?;
+    let config = Config::load().map_err(|e| anyhow::anyhow!("配置加载失败: {}", e))?;
 
     // 验证配置
-    config.validate()
+    config
+        .validate()
         .map_err(|e| anyhow::anyhow!("配置验证失败: {}", e))?;
 
     // 创建 API 客户端
@@ -36,7 +36,8 @@ async fn main() -> Result<()> {
         .map_err(|e| anyhow::anyhow!("创建 API 客户端失败: {}", e))?;
 
     // 获取 API 使用情况
-    let usage_data = client.fetch_usage()
+    let usage_data = client
+        .fetch_usage()
         .await
         .map_err(|e| anyhow::anyhow!("获取使用情况失败: {}", e))?;
 

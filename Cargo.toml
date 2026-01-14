@@ -1,5 +1,5 @@
 [package]
-name = "glm-cli"
+name = "glm"
 version = "1.0.0"
 edition = "2021"
 description = "GLM API 计划查询命令行工具"
