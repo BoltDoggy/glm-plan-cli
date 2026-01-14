@@ -62,8 +62,9 @@ fn render_limit_item(limit: &LimitItem) -> String {
             output.push_str("\n");
         }
         "TOKENS_LIMIT" => {
-            // TOKENS_LIMIT 只显示"已使用"标签
-            output.push_str("已使用\n");
+            // TOKENS_LIMIT 显示 token 使用量
+            output.push_str(&format_tokens_used(limit.current_value, limit.usage));
+            output.push_str("\n");
         }
         _ => {
             output.push_str(&format_number(limit.current_value));
@@ -126,6 +127,27 @@ fn format_number_with_used(used: u64, total: u64) -> String {
     };
 
     format!("{} / {} 次", used_str, total_str)
+}
+
+/// 格式化 token 使用量
+fn format_tokens_used(used: u64, total: u64) -> String {
+    let used_str = if used >= 100000000 {
+        format!("{:.1} 亿", used as f64 / 100000000.0)
+    } else if used >= 10000 {
+        format!("{:.1} 万", used as f64 / 10000.0)
+    } else {
+        format_number(used)
+    };
+
+    let total_str = if total >= 100000000 {
+        format!("{:.1} 亿", total as f64 / 100000000.0)
+    } else if total >= 10000 {
+        format!("{:.1} 万", total as f64 / 10000.0)
+    } else {
+        format_number(total)
+    };
+
+    format!("{} / {} tokens", used_str, total_str)
 }
 
 /// 格式化数字（添加千位分隔符）
@@ -215,9 +237,20 @@ mod tests {
         let output = render_limit_item(&limit);
         assert!(output.contains("每5小时使用限额"));
         assert!(output.contains("66%"));
-        assert!(output.contains("已使用"));
+        assert!(output.contains("tokens"));
         // 验证包含重置时间格式 (HH:MM)
         assert!(output.contains("重置时间："));
         assert!(output.contains(':')); // 时间格式包含冒号
+    }
+
+    #[test]
+    fn test_format_tokens_used() {
+        // 测试亿级
+        assert!(format_tokens_used(132374032, 200000000).contains("1.3 亿"));
+        // 测试万级
+        assert!(format_tokens_used(50000, 100000).contains("5.0 万"));
+        // 测试千级
+        assert!(format_tokens_used(1000, 5000).contains("1,000"));
+        assert!(format_tokens_used(1000, 5000).contains("5,000"));
     }
 }
